@@ -12,11 +12,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    peersmgr.cpp \
-    connection.cpp
+    peersmgr.cpp
 
 HEADERS  += mainwindow.h \
-    peersmgr.h \
-    connection.h
+    peersmgr.h
 
 FORMS    += mainwindow.ui

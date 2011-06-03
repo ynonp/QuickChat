@@ -4,13 +4,16 @@
 #include <QObject>
 #include <QHash>
 #include <QAbstractListModel>
+#include <QHostAddress>
+
 class Connection;
+class QTcpSocket;
 
 class PeersMgr : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit PeersMgr(QObject *parent = 0);
+    explicit PeersMgr(const QHostAddress &serverAddr, quint16 port, QObject *parent = 0);
 
 protected:
     virtual int rowCount();
@@ -22,7 +25,7 @@ private slots:
     void broadcastMsg(QString *msg);
 
 private:
-    QList<Connection *> iFriends;
+    QTcpSocket *link;
 };
 
 #endif // PEERSMGR_H
