@@ -12,20 +12,33 @@ class QTcpSocket;
 class PeersMgr : public QAbstractListModel
 {
     Q_OBJECT
+
 public:
     explicit PeersMgr(const QHostAddress &serverAddr, quint16 port, QObject *parent = 0);
 
-protected:
-    virtual int rowCount();
-    virtual QVariant data(const QModelIndex &index, int role) const;
-signals:
+    static QString kKeyUsername;
 
+public slots:
+    void broadcastMsg(const QString &msg);
+
+
+signals:
+    void connected();
+
+protected:
+    virtual int rowCount(const QModelIndex &parent) const;
+    virtual QVariant data(const QModelIndex &index, int role) const;
 
 private slots:
-    void broadcastMsg(QString *msg);
+
+    void linkReady();
+    void linkError(QAbstractSocket::SocketError);
+    void byebye();
+    void newServerMsg();
 
 private:
-    QTcpSocket *link;
+    QTcpSocket *iLink;
+    QList<QString> iData;
 };
 
 #endif // PEERSMGR_H

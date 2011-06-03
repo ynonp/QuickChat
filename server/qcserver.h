@@ -17,7 +17,7 @@ private slots:
     void onNewConnection();
     void dataReady();
 
-    void broadcaseMsg(const QString &msg, QTcpSocket *sendingSocket);
+    void broadcastMsg(const QString &msg, QTcpSocket *sendingSocket);
 
 private:
     void respondTo(QTcpSocket *remote, const QString &cmd, const QString &args);
