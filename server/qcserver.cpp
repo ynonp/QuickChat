@@ -48,39 +48,49 @@ void QCServer::dataReady()
         return;
     }
 
-    QDataStream stream(sock);
+    QDataStream channel(sock);
     QString msg;
 
-    stream >> msg;
+    channel >> msg;
 
-    QRegExp parser("^(\\w+) (.*)$");
+    QRegExp parser("^(hello|ls|send) ?(.*)$");
     if ( parser.indexIn(msg) >= 0 )
     {
         QString cmd = parser.cap(1);
         QString params = parser.cap(2);
-
-        if ( cmd == "hello" )
-        {
-            iClients[params] = sock;
-        }
-        else if ( cmd == "send" )
-        {
-            qDebug() << "sending: " << params;
-            QHashIterator<QString, QTcpSocket *> i(iClients);
-            while ( i.hasNext() )
-            {
-                i.next();
-                if ( i.value() != sock )
-                {
-                    QDataStream remote(i.value());
-                    remote << i.key() << params;
-                }
-            }
-
-        }
-        else if ( cmd == "ls" )
-        {
-            stream << iClients.keys();
-        }
     }
 }
+
+void QCServer::broadcaseMsg(const QString &msg, QTcpSocket *sendingSocket)
+{
+    QHashIterator<QString, QTcpSocket *> i(iClients);
+    while ( i.hasNext() )
+    {
+        i.next();
+        if ( i.value() !=  sendingSocket )
+        {
+            QDataStream remote(i.value());
+            remote << i.key() << msg;
+        }
+    }
+
+}
+
+void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &args)
+{
+    if ( cmd == "hello" )
+    {
+        iClients[args] = remote;
+    }
+    else if ( cmd == "send" )
+    {
+        qDebug() << "sending: " << args;
+        broadcaseMsg(args, remote);
+    }
+    else if ( cmd == "ls" )
+    {
+        QDataStream channel(remote);
+        channel << iClients.keys();
+    }
+}
+
