@@ -17,17 +17,10 @@ public:
     ~MainWindow();
 
 private slots:
-    void setUsername();
-    void connect();
-    void disconnect();
-    void onConnectOK();
-    void sendMsg();
-    void addChatLine(QString sender, QString content);
 
 private:
     Ui::MainWindow *ui;
     PeersMgr       *iPeersModel;
-    bool            iConnected;
 };
 
 #endif // MAINWINDOW_H
