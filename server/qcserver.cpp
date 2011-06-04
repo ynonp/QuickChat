@@ -89,6 +89,7 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
     qDebug() << cmd << args;
     if ( cmd == "hello" )
     {
+        qDebug() << "New Client: " << args;
         iClients[args] = remote;
     }
     else if ( cmd == "send" )
@@ -99,6 +100,7 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
     else if ( cmd == "ls" )
     {
         QDataStream channel(remote);
+        qDebug() << "Sending: " << iClients.keys();
         channel << QString("ls") << iClients.keys();
     }
 }
