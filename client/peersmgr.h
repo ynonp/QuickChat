@@ -17,6 +17,7 @@ public:
     explicit PeersMgr(const QHostAddress &serverAddr, quint16 port, QObject *parent = 0);
 
     static QString kKeyUsername;
+    static QString kDefaultUsername;
 
 public slots:
     void broadcastMsg(const QString &msg);
@@ -24,6 +25,7 @@ public slots:
 
 signals:
     void connected();
+    void newBroadcastMsg(QString sender, QString content);
 
 protected:
     virtual int rowCount(const QModelIndex &parent) const;

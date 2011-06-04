@@ -22,6 +22,7 @@ private slots:
     void disconnect();
     void onConnectOK();
     void sendMsg();
+    void addChatLine(QString sender, QString content);
 
 private:
     Ui::MainWindow *ui;

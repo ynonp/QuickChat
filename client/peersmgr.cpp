@@ -2,7 +2,7 @@
 #include <QTcpSocket>
 #include <QSettings>
 
-const QString kDefaultUsername = "Anonymous";
+QString PeersMgr::kDefaultUsername = "Anonymous";
 QString PeersMgr::kKeyUsername = "username";
 
 PeersMgr::PeersMgr(const QHostAddress &server, quint16 port, QObject *parent) :
@@ -54,7 +54,7 @@ void PeersMgr::linkReady()
     emit connected();
 
     QSettings settings;
-    QString username = settings.value(PeersMgr::kKeyUsername, kDefaultUsername).toString();
+    QString username = settings.value(PeersMgr::kKeyUsername, PeersMgr::kDefaultUsername).toString();
 
     QDataStream channel(iLink);
     channel << QString("hello %1").arg(username);
@@ -94,3 +94,5 @@ void PeersMgr::newServerMsg()
         endResetModel();
     }
 }
+
+

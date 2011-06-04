@@ -50,8 +50,12 @@ void MainWindow::connect()
         delete iPeersModel;
         iPeersModel = new PeersMgr(addr, port, this);
         ui->lstFriends->setModel(iPeersModel);
+
         QObject::connect(iPeersModel, SIGNAL(connected()),
                          this, SLOT(onConnectOK()));
+
+        QObject::connect(iPeersModel, SIGNAL(newBroadcastMsg(QString,QString)),
+                         this, SLOT(addChatLine(QString,QString)));
 
         ui->btnConnect->setDisabled(true);
         ui->edtAddress->setDisabled(true);
@@ -83,9 +87,18 @@ void MainWindow::sendMsg()
 {
     if ( iPeersModel )
     {
-        iPeersModel->broadcastMsg(ui->edtMsg->text());
+        QString msg = ui->edtMsg->text();
+        iPeersModel->broadcastMsg(msg);
+        QSettings settings;
+        QString username = settings.value(PeersMgr::kKeyUsername, PeersMgr::kDefaultUsername).toString();
+        addChatLine(username, msg);
     }
 
     ui->edtMsg->clear();
+}
+
+void MainWindow::addChatLine(QString sender, QString content)
+{
+    ui->txtChat->append(QString("<b>%1: </b>%2").arg(sender, content));
 }
 
