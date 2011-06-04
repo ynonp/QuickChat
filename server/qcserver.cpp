@@ -71,16 +71,20 @@ void QCServer::dataReady()
 
 void QCServer::broadcastMsg(const QString &msg, QTcpSocket *sendingSocket)
 {
-    Q_UNUSED(sendingSocket);
+    QString senderName = iClients.key(sendingSocket);
+    if ( ( senderName.isEmpty() ) || ( senderName.isNull() ) )
+    {
+        return;
+    }
+
     QHashIterator<QString, QTcpSocket *> i(iClients);
     while ( i.hasNext() )
     {
         i.next();
         QDataStream remote(i.value());
         qDebug() << "sending " << msg << " to " << i.key();
-        remote << QString("send") << i.key() << msg;
+        remote << QString("send") << senderName << msg;
     }
-
 }
 
 void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &args)
