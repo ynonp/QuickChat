@@ -71,6 +71,7 @@ void QCServer::dataReady()
 
 void QCServer::broadcastMsg(const QString &msg, QTcpSocket *sendingSocket)
 {
+    Q_UNUSED(sendingSocket);
     QHashIterator<QString, QTcpSocket *> i(iClients);
     while ( i.hasNext() )
     {
@@ -88,7 +89,8 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
     if ( cmd == "hello" )
     {
         qDebug() << "New Client: " << args;
-        iClients[args] = remote;
+        QString username = findAvailableUsername(args);
+        iClients[username] = remote;
 
         // now send the new list to all
         QHashIterator<QString, QTcpSocket *> i(iClients);
@@ -108,6 +110,18 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
     }
 }
 
+QString QCServer::findAvailableUsername(const QString &base)
+{
+    QString username = base;
+    int i=0;
+    while ( iClients.contains(username) )
+    {
+        username = base;
+        ++i;
+        username.append(QString("%1").arg(i));
+    }
+    return username;
+}
 void QCServer::sendClientList(QTcpSocket *remote)
 {
     QDataStream channel(remote);
