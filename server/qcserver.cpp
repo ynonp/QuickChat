@@ -87,6 +87,16 @@ void QCServer::broadcastMsg(const QString &msg, QTcpSocket *sendingSocket)
     }
 }
 
+void QCServer::sendClientListToAllConnectedClients()
+{
+    // now send the new list to all
+    QHashIterator<QString, QTcpSocket *> i(iClients);
+    while (i.hasNext())
+    {
+        sendClientList(i.next().value());
+    }
+}
+
 void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &args)
 {
     qDebug() << cmd << args;
@@ -95,13 +105,9 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
         qDebug() << "New Client: " << args;
         QString username = findAvailableUsername(args);
         iClients[username] = remote;
-
-        // now send the new list to all
-        QHashIterator<QString, QTcpSocket *> i(iClients);
-        while (i.hasNext())
-        {
-            sendClientList(i.next().value());
-        }
+        sendClientListToAllConnectedClients();
+        QObject::connect(remote, SIGNAL(disconnected()),
+                         this, SLOT(sendClientListToAllConnectedClients()));
     }
     else if ( cmd == "send" )
     {

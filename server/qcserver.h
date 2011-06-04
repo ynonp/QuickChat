@@ -18,6 +18,7 @@ private slots:
     void dataReady();
 
     void broadcastMsg(const QString &msg, QTcpSocket *sendingSocket);
+    void sendClientListToAllConnectedClients();
 
 private:
     void respondTo(QTcpSocket *remote, const QString &cmd, const QString &args);
