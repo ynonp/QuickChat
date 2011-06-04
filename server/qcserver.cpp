@@ -97,6 +97,18 @@ void QCServer::sendClientListToAllConnectedClients()
     }
 }
 
+void QCServer::handleClientDisconnected()
+{
+    QTcpSocket *client = qobject_cast<QTcpSocket *>(sender());
+    QString key = iClients.key(client);
+    if ( iClients.contains(key) )
+    {
+        iClients.remove(key);
+    }
+
+    sendClientListToAllConnectedClients();
+}
+
 void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &args)
 {
     qDebug() << cmd << args;
@@ -107,7 +119,7 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
         iClients[username] = remote;
         sendClientListToAllConnectedClients();
         QObject::connect(remote, SIGNAL(disconnected()),
-                         this, SLOT(sendClientListToAllConnectedClients()));
+                         this, SLOT(handleClientDisconnected()));
     }
     else if ( cmd == "send" )
     {
