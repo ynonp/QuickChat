@@ -21,6 +21,7 @@ private slots:
 
 private:
     void respondTo(QTcpSocket *remote, const QString &cmd, const QString &args);
+    void sendClientList(QTcpSocket *remote);
 
 private:
     QHash<QString, QTcpSocket *> iClients;

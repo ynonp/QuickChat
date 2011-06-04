@@ -89,6 +89,13 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
     {
         qDebug() << "New Client: " << args;
         iClients[args] = remote;
+
+        // now send the new list to all
+        QHashIterator<QString, QTcpSocket *> i(iClients);
+        while (i.hasNext())
+        {
+            sendClientList(i.next().value());
+        }
     }
     else if ( cmd == "send" )
     {
@@ -97,9 +104,13 @@ void QCServer::respondTo(QTcpSocket *remote, const QString &cmd, const QString &
     }
     else if ( cmd == "ls" )
     {
-        QDataStream channel(remote);
-        qDebug() << "Sending: " << iClients.keys();
-        channel << QString("ls") << iClients.keys();
+        sendClientList(remote);
     }
 }
 
+void QCServer::sendClientList(QTcpSocket *remote)
+{
+    QDataStream channel(remote);
+    qDebug() << "Sending: " << iClients.keys();
+    channel << QString("ls") << iClients.keys();
+}

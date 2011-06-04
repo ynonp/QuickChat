@@ -58,7 +58,6 @@ void PeersMgr::linkReady()
 
     QDataStream channel(iLink);
     channel << QString("hello %1").arg(username);
-    channel << QString("ls");
 }
 
 void PeersMgr::linkError(QAbstractSocket::SocketError e)
@@ -85,7 +84,7 @@ void PeersMgr::newServerMsg()
         QString msg;
         channel >> sender >> msg;
 
-        qDebug() << "got msg: " << msg << " from: " << sender;
+        emit newBroadcastMsg(sender, msg);
     }
     else if ( msgType == "ls" )
     {
