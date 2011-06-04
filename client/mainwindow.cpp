@@ -87,11 +87,7 @@ void MainWindow::sendMsg()
 {
     if ( iPeersModel )
     {
-        QString msg = ui->edtMsg->text();
-        iPeersModel->broadcastMsg(msg);
-        QSettings settings;
-        QString username = settings.value(PeersMgr::kKeyUsername, PeersMgr::kDefaultUsername).toString();
-        addChatLine(username, msg);
+        iPeersModel->broadcastMsg(ui->edtMsg->text());
     }
 
     ui->edtMsg->clear();

@@ -75,11 +75,9 @@ void QCServer::broadcastMsg(const QString &msg, QTcpSocket *sendingSocket)
     while ( i.hasNext() )
     {
         i.next();
-        if ( i.value() !=  sendingSocket )
-        {
-            QDataStream remote(i.value());
-            remote << QString("send") << i.key() << msg;
-        }
+        QDataStream remote(i.value());
+        qDebug() << "sending " << msg << " to " << i.key();
+        remote << QString("send") << i.key() << msg;
     }
 
 }
