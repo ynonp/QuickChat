@@ -78,7 +78,7 @@ void QCServer::broadcastMsg(const QString &msg, QTcpSocket *sendingSocket)
         if ( i.value() !=  sendingSocket )
         {
             QDataStream remote(i.value());
-            remote << QString("ls") << i.key() << msg;
+            remote << QString("send") << i.key() << msg;
         }
     }
 
